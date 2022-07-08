@@ -17,6 +17,14 @@ class ExampleApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
+          textTheme: const TextTheme(
+            bodyMedium: TextStyle(
+              color: Colors.black,
+              fontSize: 16,
+              fontWeight: FontWeight.w800,
+              fontFamily: 'Avenir',
+            ),
+          )
       ),
       home: ImagePainterExample(),
     );
@@ -67,13 +75,17 @@ class _ImagePainterExampleState extends State<ImagePainterExample> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.black,
       key: _key,
       appBar: AppBar(
         title: const Text("Image Painter Example"),
         actions: [
           IconButton(
             icon: const Icon(Icons.save_alt),
-            onPressed: saveImage,
+            //onPressed: saveImage,
+            onPressed: (){
+              _imageKey.currentState.undoPaintHistory();
+            },
           )
         ],
       ),

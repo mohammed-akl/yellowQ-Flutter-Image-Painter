@@ -50,7 +50,7 @@ class TriangleTrackShape extends SliderTrackShape {
     );
     // Paint color for active and inactive segments of the track. We can also define the colors to be gradient here.
     final Paint activePaint = Paint()
-      ..color = Colors.blue
+      ..color = Colors.white.withOpacity(0.3)
       ..style = PaintingStyle.fill;
     final Paint inactivePaint = Paint()
       ..color = Colors.green
@@ -94,7 +94,6 @@ class TriangleTrackShape extends SliderTrackShape {
 
     Paint paint_0_fill = Paint()..style=PaintingStyle.fill;
     //paint_0_fill.color = Colors.red.withOpacity(1.0);
-    paint_0_fill.color = Colors.red;
 
     final inactivePathSegment = Path()
       /*..moveTo(thumbCenter.dx, trackRect.bottom + trackShiftAlongY)

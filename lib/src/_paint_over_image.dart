@@ -349,6 +349,7 @@ class ImagePainterState extends State<ImagePainter> {
   Offset? _start, _end;
   int _strokeMultiplier = 1;
   late TextDelegate textDelegate;
+  //MagnifyingGlassController magnifyingGlassController = MagnifyingGlassController();
   @override
   void initState() {
     super.initState();
@@ -478,42 +479,40 @@ class ImagePainterState extends State<ImagePainter> {
       child: Column(
         children: [
           //if (widget.controlsAtTop) _buildControls(),
-          Expanded(
-            child: FittedBox(
-              alignment: FractionalOffset.center,
-              child: ClipRect(
-                child: ValueListenableBuilder<Controller>(
-                  valueListenable: _controller,
-                  builder: (_, controller, __) {
-                    return ImagePainterTransformer(
-                      maxScale: 2.4,
-                      minScale: 1,
-                      panEnabled: controller.mode == PaintMode.none,
-                      scaleEnabled: widget.isScalable!,
-                      onInteractionUpdate: (details) =>
-                          _scaleUpdateGesture(details, controller),
-                      onInteractionEnd: (details) =>
-                          _scaleEndGesture(details, controller),
-                      child: CustomPaint(
-                        size: Size(_image!.width.toDouble(),
-                            _image!.height.toDouble()),
-                        willChange: true,
-                        isComplex: true,
-                        painter: DrawImage(
-                          image: _image,
-                          points: _points,
-                          paintHistory: _paintHistory,
-                          isDragging: _inDrag,
-                          update: UpdatePoints(
-                              start: _start,
-                              end: _end,
-                              painter: _painter,
-                              mode: controller.mode),
-                        ),
+          FittedBox(
+            alignment: FractionalOffset.center,
+            child: ClipRect(
+              child: ValueListenableBuilder<Controller>(
+                valueListenable: _controller,
+                builder: (_, controller, __) {
+                  return ImagePainterTransformer(
+                    maxScale: 2.4,
+                    minScale: 1,
+                    panEnabled: controller.mode == PaintMode.none,
+                    scaleEnabled: widget.isScalable!,
+                    onInteractionUpdate: (details) =>
+                        _scaleUpdateGesture(details, controller),
+                    onInteractionEnd: (details) =>
+                        _scaleEndGesture(details, controller),
+                    child: CustomPaint(
+                      size: Size(_image!.width.toDouble(),
+                          _image!.height.toDouble()),
+                      willChange: true,
+                      isComplex: true,
+                      painter: DrawImage(
+                        image: _image,
+                        points: _points,
+                        paintHistory: _paintHistory,
+                        isDragging: _inDrag,
+                        update: UpdatePoints(
+                            start: _start,
+                            end: _end,
+                            painter: _painter,
+                            mode: controller.mode),
                       ),
-                    );
-                  },
-                ),
+                    ),
+                  );
+                },
               ),
             ),
           ),
@@ -772,6 +771,12 @@ class ImagePainterState extends State<ImagePainter> {
     }
   }
 
+  Future<void> undoPaintHistory() async{
+    if(_paintHistory.isNotEmpty){
+      setState(_paintHistory.removeLast);
+    }
+  }
+
   void _openTextDialog() {
     _controller.value = _controller.value.copyWith(mode: PaintMode.text);
     final fontSize = 6 * _controller.value.strokeWidth;
@@ -796,13 +801,14 @@ class ImagePainterState extends State<ImagePainter> {
 
   Widget _buildControls() {
     return Container(
-      padding: const EdgeInsets.all(4),
-      color: Colors.grey[200],
+      padding: const EdgeInsets.all(19),
+      //color: Colors.grey[200],
       child: Column(
         children: [
           Row(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              ValueListenableBuilder<Controller>(
+              /*ValueListenableBuilder<Controller>(
                   valueListenable: _controller,
                   builder: (_, _ctrl, __) {
                     return PopupMenuButton(
@@ -817,8 +823,8 @@ class ImagePainterState extends State<ImagePainter> {
                           color: Colors.grey[700]),
                       itemBuilder: (_) => [_showOptionsRow(_ctrl)],
                     );
-                  }),
-              ValueListenableBuilder<Controller>(
+                  }),*/
+              /*ValueListenableBuilder<Controller>(
                   valueListenable: _controller,
                   builder: (_, controller, __) {
                     return PopupMenuButton(
@@ -838,8 +844,8 @@ class ImagePainterState extends State<ImagePainter> {
                           ),
                       itemBuilder: (_) => [_showColorPicker(controller)],
                     );
-                  }),
-              PopupMenuButton(
+                  }),*/
+              /*PopupMenuButton(
                 tooltip: textDelegate.changeBrushSize,
                 shape: ContinuousRectangleBorder(
                   borderRadius: BorderRadius.circular(20),
@@ -847,11 +853,32 @@ class ImagePainterState extends State<ImagePainter> {
                 icon:
                     widget.brushIcon ?? Icon(Icons.brush, color: Colors.grey[700]),
                 itemBuilder: (_) => [_showRangeSlider()],
-              ),
-              IconButton(
-                  icon: const Icon(Icons.text_format), onPressed: _openTextDialog),
-              const Spacer(),
-              IconButton(
+              ),*/
+              /*IconButton(
+                  icon: const Icon(Icons.text_format), onPressed: _openTextDialog),*/
+              //const Spacer(),
+              RaisedButton(
+                  color: Colors.white,
+                  padding: const EdgeInsets.fromLTRB(20,10,20,10),
+                  shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(64.0))),
+                  onPressed: (){
+                    if (_paintHistory.isNotEmpty) {
+                      setState(_paintHistory.clear);
+                    }
+                  },
+
+                  child: Text(
+                    "Restore",
+                    /*style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w800,
+                      fontFamily: 'Avenir',
+                    ),*/
+                    style: Theme.of(context).textTheme.bodyMedium,
+                  )),
+              /*IconButton(
                   tooltip: textDelegate.undo,
                   icon:
                       widget.undoIcon ?? Icon(Icons.reply, color: Colors.grey[700]),
@@ -866,7 +893,7 @@ class ImagePainterState extends State<ImagePainter> {
                 icon: widget.clearAllIcon ??
                     Icon(Icons.clear, color: Colors.grey[700]),
                 onPressed: () => setState(_paintHistory.clear),
-              ),
+              ),*/
             ],
           ),
           ValueListenableBuilder<Controller>(
