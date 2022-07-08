@@ -8,7 +8,6 @@
 A flutter implementation of painting over image.
 
 # Overview
-![demo!](https://raw.githubusercontent.com/yellowQ-software/yellowQ-Flutter-Image-Painter/main/screenshots/image_painter_sample.gif)
 
 ## Features
 
