@@ -81,10 +81,10 @@ class _ImagePainterExampleState extends State<ImagePainterExample> {
         "assets/sample.jpg",
         key: _imageKey,
         scalable: true,
-        initialStrokeWidth: 2,
+        initialStrokeWidth: 10,
         textDelegate: DutchTextDelegate(),
-        initialColor: Colors.green,
-        initialPaintMode: PaintMode.line,
+        initialColor: Colors.white,
+        initialPaintMode: PaintMode.freeStyle,
       ),
     );
   }

@@ -477,7 +477,7 @@ class ImagePainterState extends State<ImagePainter> {
       width: widget.width ?? double.maxFinite,
       child: Column(
         children: [
-          if (widget.controlsAtTop) _buildControls(),
+          //if (widget.controlsAtTop) _buildControls(),
           Expanded(
             child: FittedBox(
               alignment: FractionalOffset.center,
@@ -517,7 +517,8 @@ class ImagePainterState extends State<ImagePainter> {
               ),
             ),
           ),
-          if (!widget.controlsAtTop) _buildControls(),
+          //if (!widget.controlsAtTop) _buildControls(),
+          _buildControls(),
           SizedBox(height: MediaQuery.of(context).padding.bottom)
         ],
       ),
@@ -797,73 +798,95 @@ class ImagePainterState extends State<ImagePainter> {
     return Container(
       padding: const EdgeInsets.all(4),
       color: Colors.grey[200],
-      child: Row(
+      child: Column(
         children: [
-          ValueListenableBuilder<Controller>(
-              valueListenable: _controller,
-              builder: (_, _ctrl, __) {
-                return PopupMenuButton(
-                  tooltip: textDelegate.changeMode,
-                  shape: ContinuousRectangleBorder(
-                    borderRadius: BorderRadius.circular(40),
-                  ),
-                  icon: Icon(
-                      paintModes(textDelegate)
-                          .firstWhere((item) => item.mode == _ctrl.mode)
-                          .icon,
-                      color: Colors.grey[700]),
-                  itemBuilder: (_) => [_showOptionsRow(_ctrl)],
-                );
-              }),
-          ValueListenableBuilder<Controller>(
-              valueListenable: _controller,
-              builder: (_, controller, __) {
-                return PopupMenuButton(
-                  padding: const EdgeInsets.symmetric(vertical: 10),
-                  shape: ContinuousRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  tooltip: textDelegate.changeColor,
-                  icon: widget.colorIcon ??
-                      Container(
-                        padding: const EdgeInsets.all(2.0),
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          border: Border.all(color: Colors.grey),
-                          color: controller.color,
-                        ),
+          Row(
+            children: [
+              ValueListenableBuilder<Controller>(
+                  valueListenable: _controller,
+                  builder: (_, _ctrl, __) {
+                    return PopupMenuButton(
+                      tooltip: textDelegate.changeMode,
+                      shape: ContinuousRectangleBorder(
+                        borderRadius: BorderRadius.circular(40),
                       ),
-                  itemBuilder: (_) => [_showColorPicker(controller)],
-                );
-              }),
-          PopupMenuButton(
-            tooltip: textDelegate.changeBrushSize,
-            shape: ContinuousRectangleBorder(
-              borderRadius: BorderRadius.circular(20),
-            ),
-            icon:
-                widget.brushIcon ?? Icon(Icons.brush, color: Colors.grey[700]),
-            itemBuilder: (_) => [_showRangeSlider()],
+                      icon: Icon(
+                          paintModes(textDelegate)
+                              .firstWhere((item) => item.mode == _ctrl.mode)
+                              .icon,
+                          color: Colors.grey[700]),
+                      itemBuilder: (_) => [_showOptionsRow(_ctrl)],
+                    );
+                  }),
+              ValueListenableBuilder<Controller>(
+                  valueListenable: _controller,
+                  builder: (_, controller, __) {
+                    return PopupMenuButton(
+                      padding: const EdgeInsets.symmetric(vertical: 10),
+                      shape: ContinuousRectangleBorder(
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      tooltip: textDelegate.changeColor,
+                      icon: widget.colorIcon ??
+                          Container(
+                            padding: const EdgeInsets.all(2.0),
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              border: Border.all(color: Colors.grey),
+                              color: controller.color,
+                            ),
+                          ),
+                      itemBuilder: (_) => [_showColorPicker(controller)],
+                    );
+                  }),
+              PopupMenuButton(
+                tooltip: textDelegate.changeBrushSize,
+                shape: ContinuousRectangleBorder(
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                icon:
+                    widget.brushIcon ?? Icon(Icons.brush, color: Colors.grey[700]),
+                itemBuilder: (_) => [_showRangeSlider()],
+              ),
+              IconButton(
+                  icon: const Icon(Icons.text_format), onPressed: _openTextDialog),
+              const Spacer(),
+              IconButton(
+                  tooltip: textDelegate.undo,
+                  icon:
+                      widget.undoIcon ?? Icon(Icons.reply, color: Colors.grey[700]),
+                  onPressed: () {
+                    print(_paintHistory.length);
+                    if (_paintHistory.isNotEmpty) {
+                      setState(_paintHistory.removeLast);
+                    }
+                  }),
+              IconButton(
+                tooltip: textDelegate.clearAllProgress,
+                icon: widget.clearAllIcon ??
+                    Icon(Icons.clear, color: Colors.grey[700]),
+                onPressed: () => setState(_paintHistory.clear),
+              ),
+            ],
           ),
-          IconButton(
-              icon: const Icon(Icons.text_format), onPressed: _openTextDialog),
-          const Spacer(),
-          IconButton(
-              tooltip: textDelegate.undo,
-              icon:
-                  widget.undoIcon ?? Icon(Icons.reply, color: Colors.grey[700]),
-              onPressed: () {
-                print(_paintHistory.length);
-                if (_paintHistory.isNotEmpty) {
-                  setState(_paintHistory.removeLast);
-                }
-              }),
-          IconButton(
-            tooltip: textDelegate.clearAllProgress,
-            icon: widget.clearAllIcon ??
-                Icon(Icons.clear, color: Colors.grey[700]),
-            onPressed: () => setState(_paintHistory.clear),
+          ValueListenableBuilder<Controller>(
+            valueListenable: _controller,
+            builder: (_, ctrl, __) {
+              return Container(
+                width: 292,
+                child: RangedSlider(
+                  value: ctrl.strokeWidth,
+                  onChanged: (value) {
+                    _controller.value = ctrl.copyWith(strokeWidth: value);
+                    if (widget.onStrokeWidthChanged != null) {
+                      widget.onStrokeWidthChanged!(value);
+                    }
+                  },
+                ),
+              );
+            },
           ),
+
         ],
       ),
     );
