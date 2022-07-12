@@ -776,6 +776,14 @@ class ImagePainterState extends State<ImagePainter> {
       setState(_paintHistory.removeLast);
     }
   }
+  
+  Future<bool> checkPaintHistoryEmpty() async{
+    bool result = true;
+    if(_paintHistory.isNotEmpty){
+      result = false;
+    }
+    return result;
+  }
 
   void _openTextDialog() {
     _controller.value = _controller.value.copyWith(mode: PaintMode.text);
