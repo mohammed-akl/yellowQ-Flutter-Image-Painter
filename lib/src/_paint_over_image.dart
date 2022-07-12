@@ -480,6 +480,7 @@ class ImagePainterState extends State<ImagePainter> {
         children: [
           //if (widget.controlsAtTop) _buildControls(),
           FittedBox(
+            fit: BoxFit.fitWidth,
             alignment: FractionalOffset.center,
             child: ClipRect(
               child: ValueListenableBuilder<Controller>(
