@@ -349,6 +349,7 @@ class ImagePainterState extends State<ImagePainter> {
   Offset? _start, _end;
   int _strokeMultiplier = 1;
   late TextDelegate textDelegate;
+  int toggleIndex = 0;
   //MagnifyingGlassController magnifyingGlassController = MagnifyingGlassController();
   @override
   void initState() {
@@ -887,6 +888,43 @@ class ImagePainterState extends State<ImagePainter> {
                     ),*/
                     style: Theme.of(context).textTheme.bodyMedium,
                   )),
+              /*ValueListenableBuilder<Controller>(
+                valueListenable: _controller,
+                builder: (_, controller, __) {
+                  return ToggleSwitch(
+                    animate: true,
+                    animationDuration: 20,
+                    minWidth: 90.0,
+                    minHeight: 49.0,
+                    cornerRadius: 64.0,
+                    activeBgColors: [[Colors.black], [Colors.black]],
+                    activeFgColor: Colors.white,
+                    inactiveBgColor: Colors.white,
+                    inactiveFgColor: Color(0xFF3B506B),
+                    initialLabelIndex: toggleIndex,
+                    totalSwitches: 2,
+                    labels: ['Erase', 'Zoom'],
+                    radiusStyle: true,
+                    onToggle: (index) {
+                      toggleIndex = index!;
+                      if (index==0){
+                        controller.mode == PaintMode.freeStyle;
+                        widget.isScalable == false;
+                        widget.onPaintModeChanged!(PaintMode.freeStyle);
+                        _controller.value = controller.copyWith(mode: PaintMode.freeStyle);
+                      } else {
+                        controller.mode == PaintMode.none;
+                        widget.isScalable == true;
+                        widget.onPaintModeChanged!(PaintMode.none);
+                        _controller.value = controller.copyWith(mode: PaintMode.none);
+                      }
+                      setState(() {
+
+                      });
+                    },
+                  );
+                }
+              ),*/
               /*IconButton(
                   tooltip: textDelegate.undo,
                   icon:
